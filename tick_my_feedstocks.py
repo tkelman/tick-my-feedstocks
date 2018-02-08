@@ -85,6 +85,7 @@ import argparse
 import os
 import re
 import shutil
+import stat
 import tempfile
 from base64 import b64encode
 from collections import defaultdict
@@ -547,7 +548,7 @@ def regenerate_fork(fork):
     if not r.is_dirty():
         # No changes made during regeneration.
         # Clean up and return
-        shutil.rmtree(working_dir)
+        shutil.rmtree(working_dir, onerror=remove_readonly)
         return False
 
     commit_msg = \
@@ -558,8 +559,13 @@ def regenerate_fork(fork):
                    author=Actor(fork.owner.login, fork.owner.email))
     r.git.push()
 
-    shutil.rmtree(working_dir)
+    shutil.rmtree(working_dir, onerror=remove_readonly)
     return True
+
+
+def remove_readonly(func, path, excinfo):
+    os.chmod(path, stat.S_IWRITE)
+    func(path)
 
 
 def tick_feedstocks(gh_password=None,
