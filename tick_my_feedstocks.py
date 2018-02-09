@@ -90,8 +90,6 @@ import tempfile
 from base64 import b64encode
 from collections import defaultdict
 from collections import namedtuple
-import conda_smithy
-import conda_smithy.configure_feedstock
 from git import Actor
 from git import Repo
 from github import Github
@@ -537,6 +535,9 @@ def regenerate_fork(fork):
     :param github.Repository.Repository fork: fork of conda-forge feedstock
     :return: `bool` -- True if regenerated, false otherwise
     """
+    import conda_smithy
+    import conda_smithy.configure_feedstock
+
     # Would need me to pass gh_user, gh_password
     # subprocess.run(["./renderer.sh", gh_user, gh_password, fork.name])
 
